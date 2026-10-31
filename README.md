@@ -53,7 +53,7 @@ train 2234 readings, test 795 readings
 accuracy 0.9308   balanced accuracy 0.9697   macro F1 0.9622
 ```
 
-## Reproduce every result in the thesis (about 15 minutes)
+## Reproduce every result in the thesis (about 30 minutes)
 
 ```bash
 python run_all.py
@@ -98,6 +98,8 @@ Compare-Object (Get-Content pipeline_run_log.txt | Select-String -NotMatch "Run 
 | 20 | `chapter4_figures.py` | `fig4_1` to `fig4_8`, Figures 5 to 12 of the thesis |
 | 21 | `chapter4_figures_m4.py` | `fig4_9` to `fig4_15`, Figures 13 to 19 of the thesis |
 | 22 | `write_ch4.py` | `results_and_discussion.tex`, Chapter 4 with every number filled in from the outputs above |
+| 23 | `cluster_methods.py` | k means against k medoids, Ward, a Gaussian mixture, HDBSCAN and a Gaussian hidden Markov model on the same features (`comparison_methods.csv`, `comparison_methods.json`) |
+| 24 | `cluster_methods_figure.py` | `ch4_methods.png`, Figure 11 of the thesis |
 
 `sensitivity_range.py` is run separately, after `run_all.py`; it compares the states
 under three cleaning rules for out of range readings (Appendix A of the thesis).

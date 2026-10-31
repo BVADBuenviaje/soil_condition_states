@@ -28,6 +28,8 @@ STEPS = [
     ('20. Chapter 4 figures (thesis Figures 5 to 12)',         ['chapter4_figures.py']),
     ('21. Chapter 4 figures (thesis Figures 13 to 19)',        ['chapter4_figures_m4.py']),
     ('22. Chapter 4 text, every number filled from the outputs', ['write_ch4.py', 'results_and_discussion.tex']),
+    ('23. Comparison with five other clustering methods',     ['cluster_methods.py']),
+    ('24. Clustering comparison figure (thesis Figure 11)',    ['cluster_methods_figure.py']),
 ]
 
 def sha(path):
