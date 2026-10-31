@@ -3,6 +3,10 @@ from sklearn.cluster import KMeans
 from sklearn.metrics import silhouette_score, normalized_mutual_info_score
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import accuracy_score, f1_score
+import json
+from common import name_clusters, present
+_c = json.load(open('best_configs.json'))['random_forest']
+RF_PARAMS = {**_c['fixed'], **_c['tuned'], 'n_jobs': -1}
 warnings.filterwarnings('ignore')
 
 FEAT = ['moisture_rel','ph_rel','temp_rel','dmoist_1h','dmoist_3h']
@@ -26,23 +30,12 @@ def build(d):
     d['hour']=d.ts.dt.hour
     return d
 
-def name_states(prof, K=4):
-    names={prof.moisture_rel.idxmax():'Saturated'}
-    rest=sorted([c for c in range(K) if c not in names], key=lambda c: prof.loc[c,'moisture_rel'])
-    lo,mid,hi=rest
-    if prof.loc[lo,'ph_rel']>prof.loc[mid,'ph_rel']:
-        names[lo]='Drier / higher pH'; names[mid]='Drier / lower pH'
-    else:
-        names[mid]='Drier / higher pH'; names[lo]='Drier / lower pH'
-    names[hi]='Moist / cooler'
-    return names
-
 def report(tag, d):
     d = build(d)
     X = d[FEAT].clip(-5,5).values
     km = KMeans(4, n_init=30, random_state=0).fit(X)
     prof = pd.DataFrame(km.cluster_centers_, columns=FEAT)
-    names = name_states(prof)
+    names = name_clusters(km.cluster_centers_)
     d['state'] = [names[c] for c in km.labels_]
     sat = d[d.state=='Saturated']
     print(f"\n{'='*72}\n{tag}\n{'='*72}")
@@ -52,21 +45,22 @@ def report(tag, d):
     if len(sat):
         in_window = ((sat.hour>=7)&(sat.hour<=10)).mean()
         print(f"Saturated: {len(sat)} rows on {sat.node.nunique()} nodes, "
-              f"{100*in_window:.0f} percent inside the 7 to 10 AM window, "
+              f"{100*in_window:.0f} percent inside the 07:00 to 11:00 window, "
               f"max moisture {sat.moisture.max():.1f}")
         print("  hours: " + ", ".join(f"{h}h:{n}" for h,n in sat.hour.value_counts().sort_index().items()))
     split = pd.Timestamp('2025-11-06')
     tr, te = d.ts < split, d.ts >= split
     km2 = KMeans(4, n_init=30, random_state=0).fit(X[tr.values])
-    n2 = name_states(pd.DataFrame(km2.cluster_centers_, columns=FEAT))
+    n2 = name_clusters(km2.cluster_centers_)
     ytr = [n2[c] for c in km2.labels_]
     yte = [n2[c] for c in km2.predict(X[te.values])]
-    rf = RandomForestClassifier(400, min_samples_leaf=3, random_state=0, n_jobs=-1,
-                                class_weight='balanced').fit(X[tr.values], ytr)
+    rf = RandomForestClassifier(**RF_PARAMS).fit(X[tr.values], ytr)
     pred = rf.predict(X[te.values])
     base = pd.Series(yte).value_counts(normalize=True).max()
+    L = present(ytr)
+    print(f"training period states: {L}")
     print(f"classifier, chronological split: accuracy {accuracy_score(yte,pred):.3f}  "
-          f"macro F1 {f1_score(yte,pred,average='macro'):.3f}  majority baseline {base:.3f}")
+          f"macro F1 {f1_score(yte,pred,average='macro',labels=L,zero_division=0):.3f}  majority baseline {base:.3f}")
 
 A = raw[raw.temp < 45]
 ok_ph = raw.ph.between(3,10)

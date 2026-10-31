@@ -1,13 +1,13 @@
 ==============================================================================
 SOIL CONDITION STATE ANALYSIS: FULL PIPELINE RUN
 ==============================================================================
-Run at        : 2026-09-21 12:08:04 UTC
-Python        : 3.11.15 on Linux
-pandas        : 3.0.2
-numpy         : 2.4.4
-sklearn       : 1.8.0
-scipy         : 1.17.1
-matplotlib    : 3.10.9
+Run at        : 2026-10-21 12:59:40 UTC
+Python        : 3.13.16 on Linux
+pandas        : 3.0.5
+numpy         : 2.5.3
+sklearn       : 1.9.1
+scipy         : 1.18.1
+matplotlib    : 3.11.2
 Input file    : data/One_Month_Calibrated_Data.xlsx
 Input sha256  : 8df0582d49de7cdf (first 16 hex)
 
@@ -28,10 +28,10 @@ Node-03    576
 Node-04    635
 Node-05    628
 
-[completed in 1.2 s]
+[completed in 1.5 s]
 
 ------------------------------------------------------------------------------
-1. Is the clustering just recovering the sensor locations?
+1. Clustering of the raw readings against the sensor locations
 ------------------------------------------------------------------------------
 $ python3 cluster_test.py
 
@@ -103,7 +103,7 @@ row_0
  4       0.534      0.374      0.205      0.384      0.408
  5       0.404      0.598      0.500      0.612      0.608
 
-[completed in 5.6 s]
+[completed in 6.4 s]
 
 ------------------------------------------------------------------------------
 2. Build the location free features
@@ -119,7 +119,7 @@ dmoist_1h     3029.0 -0.08  1.20 -24.77 -0.03  0.0  0.00  18.62
 dmoist_3h     3029.0 -0.11  1.61 -32.62 -0.07  0.0  0.00  18.69
 rows: 3029 | per node: {'Node-04': 635, 'Node-05': 628, 'Node-02': 612, 'Node-01': 578, 'Node-03': 576}
 
-[completed in 0.4 s]
+[completed in 0.5 s]
 
 ------------------------------------------------------------------------------
 3. How many states?
@@ -174,7 +174,7 @@ row_0
 3         0.02     0.00     0.02     0.00     0.00
 4         0.28     0.37     0.39     0.33     0.44
 
-[completed in 2.1 s]
+[completed in 2.4 s]
 
 ------------------------------------------------------------------------------
 4. Leave one node out transfer test (k = 4, seed 0)
@@ -195,57 +195,68 @@ Drier / lower pH     Nov 07
 Moist / cooler       Oct 29
 Saturated            Oct 29
 
-=== Leave-one-node-out ===
+=== Leave one node out ===
 
-Held out Node-01:  state share  (train 4 nodes  vs  held-out node)
-          Saturated  Moist / cooler  Drier / higher pH  Drier / lower pH
-train          0.03            0.41               0.36              0.20
-held_out       0.03            0.33               0.36              0.28
+Held out Node-01: the fold on its own forms ['Saturated', 'Moist / cooler', 'Drier / higher pH', 'Drier / lower pH']  (same set as reference: True)
+                   train 4 nodes  held out node  reference, same node  centre distance      fold calls it
+Saturated                  0.031          0.031                 0.031             3.38          Saturated
+Moist / cooler             0.409          0.330                 0.289             0.25     Moist / cooler
+Drier / higher pH          0.359          0.363                 0.398             0.10  Drier / higher pH
+Drier / lower pH           0.201          0.275                 0.282             0.35   Drier / lower pH
 
-Held out Node-02:  state share  (train 4 nodes  vs  held-out node)
-          Saturated  Moist / cooler  Drier / higher pH  Drier / lower pH
-train          0.01            0.33               0.39              0.26
-held_out       0.01            0.36               0.41              0.22
+Held out Node-02: the fold on its own forms ['Saturated', 'Moist / cooler', 'Drier / higher pH', 'Drier / lower pH']  (same set as reference: True)
+                   train 4 nodes  held out node  reference, same node  centre distance      fold calls it
+Saturated                  0.014          0.010                 0.010             0.43          Saturated
+Moist / cooler             0.333          0.356                 0.371             0.20     Moist / cooler
+Drier / higher pH          0.392          0.412                 0.381             0.20  Drier / higher pH
+Drier / lower pH           0.261          0.222                 0.239             0.12   Drier / lower pH
 
-Held out Node-03:  state share  (train 4 nodes  vs  held-out node)
-          Saturated  Moist / cooler  Drier / higher pH  Drier / lower pH
-train          0.01            0.38               0.32              0.28
-held_out       0.02            0.44               0.29              0.26
+Held out Node-03: the fold on its own forms ['Saturated', 'Moist / cooler', 'Drier / higher pH', 'Drier / lower pH']  (same set as reference: True)
+                   train 4 nodes  held out node  reference, same node  centre distance      fold calls it
+Saturated                  0.009          0.019                 0.023             1.91          Saturated
+Moist / cooler             0.384          0.439                 0.394             0.20     Moist / cooler
+Drier / higher pH          0.322          0.286                 0.330             0.14  Drier / higher pH
+Drier / lower pH           0.285          0.255                 0.253             0.03   Drier / lower pH
 
-Held out Node-04:  state share  (train 4 nodes  vs  held-out node)
-          Saturated  Moist / cooler  Drier / higher pH  Drier / lower pH
-train          0.02            0.38               0.34              0.26
-held_out       0.00            0.35               0.37              0.28
+Held out Node-04: the fold on its own forms ['Saturated', 'Moist / cooler', 'Drier / higher pH', 'Drier / lower pH']  (same set as reference: True)
+                   train 4 nodes  held out node  reference, same node  centre distance      fold calls it
+Saturated                  0.017          0.000                 0.000             0.00          Saturated
+Moist / cooler             0.384          0.348                 0.328             0.05     Moist / cooler
+Drier / higher pH          0.343          0.372                 0.380             0.06  Drier / higher pH
+Drier / lower pH           0.257          0.280                 0.293             0.09   Drier / lower pH
 
-Held out Node-05:  state share  (train 4 nodes  vs  held-out node)
-          Saturated  Moist / cooler  Drier / higher pH  Drier / lower pH
-train          0.02            0.44               0.54              0.01
-held_out       0.00            0.49               0.50              0.00
+Held out Node-05: the fold on its own forms ['Saturated', 'Rapid drainage', 'Moist / cooler', 'Drier']  (same set as reference: False)
+                   train 4 nodes  held out node  reference, same node  centre distance   fold calls it
+Saturated                  0.015          0.005                 0.005             0.23       Saturated
+Moist / cooler             0.435          0.492                 0.449             0.31  Moist / cooler
+Drier / higher pH          0.538          0.498                 0.250             0.47           Drier
+Drier / lower pH           0.011          0.005                 0.296             4.52  Rapid drainage
 
 Summary:
-held_out  n_rows  silhouette_heldout  agreement_with_full_model_ARI  saturated_rows  share_of_saturated_in_7to10am  mean_state_run_hours
- Node-01     578               0.228                          0.681              18                           0.78                   6.4
- Node-02     612               0.223                          0.798               6                           0.50                   9.6
- Node-03     576               0.204                          0.845              11                           1.00                  10.7
- Node-04     635               0.257                          0.937               0                           0.18                  12.7
- Node-05     628               0.250                          0.517               3                           0.33                  15.7
+held_out  n_rows  same_state_set                                                       fold_states  silhouette_heldout  agreement_with_full_model_ARI  saturated_rows  share_of_saturated_in_7to10am  mean_per_state_run_hours  hour_distribution_difference hour_distribution_worst_state  states_compared_by_hour
+ Node-01     578            True Saturated | Moist / cooler | Drier / higher pH | Drier / lower pH               0.228                          0.681              18                           0.78                       3.8                         0.073              Drier / lower pH                        4
+ Node-02     612            True Saturated | Moist / cooler | Drier / higher pH | Drier / lower pH               0.223                          0.798               6                           0.50                       4.5                         0.083              Drier / lower pH                        4
+ Node-03     576            True Saturated | Moist / cooler | Drier / higher pH | Drier / lower pH               0.204                          0.845              11                           1.00                       5.2                         0.070                     Saturated                        4
+ Node-04     635            True Saturated | Moist / cooler | Drier / higher pH | Drier / lower pH               0.257                          0.937               0                            NaN                       6.3                         0.033              Drier / lower pH                        3
+ Node-05     628           False               Saturated | Rapid drainage | Moist / cooler | Drier               0.250                          0.517               3                           0.33                       4.2                         0.855              Drier / lower pH                        4
 
-[completed in 2.0 s]
+[completed in 2.3 s]
 
 ------------------------------------------------------------------------------
 5. Hyperparameter tuning on the validation window
 ------------------------------------------------------------------------------
 $ python3 tune_models.py
 
+states of the training period partition: ['Saturated', 'Rapid drainage', 'Moist / cooler', 'Drier']
 sub training 1518 readings   validation 716 readings   (test week untouched)
-state counts, sub training : {'Saturated': 23, 'Moist / cooler': 516, 'Drier / higher pH': 960, 'Drier / lower pH': 19}
-state counts, validation   : {'Saturated': 11, 'Moist / cooler': 554, 'Drier / higher pH': 146, 'Drier / lower pH': 5}
+state counts, sub training : {'Saturated': 23, 'Rapid drainage': 19, 'Moist / cooler': 516, 'Drier': 960}
+state counts, validation   : {'Saturated': 11, 'Rapid drainage': 5, 'Moist / cooler': 554, 'Drier': 146}
 
-random_forest: 96 configurations (search completed in 84.2 s)
-  best validation macro F1 0.9718; 2 within 0.005; chosen {'min_samples_leaf': 2, 'max_features': 1, 'max_depth': 8}
-  chosen: train 0.9941  validation 0.9678
+random_forest: 96 configurations (search completed in 106.9 s)
+  best validation macro F1 0.9634; 1 within 0.005; chosen {'min_samples_leaf': 1, 'max_features': 1, 'max_depth': None}
+  chosen: train 0.9996  validation 0.9634
 
-decision_tree: 36 configurations (search completed in 0.3 s)
+decision_tree: 36 configurations (search completed in 0.4 s)
   best validation macro F1 0.8909; 3 within 0.005; chosen {'min_samples_leaf': 1, 'max_depth': 6}
   chosen: train 0.9756  validation 0.8909
 
@@ -255,68 +266,77 @@ logistic_regression: 7 configurations (search completed in 0.1 s)
 
 wrote best_configs.json
 
-[completed in 85.8 s]
+[completed in 109.0 s]
 
 ------------------------------------------------------------------------------
 6. Classifier and state transitions
 ------------------------------------------------------------------------------
 $ python3 classifier_transitions.py
 
-Random Forest configuration (from tune_models.py): {'n_estimators': 400, 'class_weight': 'balanced', 'bootstrap': True, 'random_state': 0, 'min_samples_leaf': 2, 'max_features': 1, 'max_depth': 8, 'n_jobs': -1}
-State counts (all nodes):
+Random Forest configuration (from tune_models.py): {'n_estimators': 400, 'class_weight': 'balanced', 'bootstrap': True, 'random_state': 0, 'min_samples_leaf': 1, 'max_features': 1, 'max_depth': None, 'n_jobs': -1}
+Reference state counts (all nodes):
 state_ref
 Saturated              40
 Moist / cooler       1111
 Drier / higher pH    1051
 Drier / lower pH      827
 
+states of the training period partition: ['Saturated', 'Rapid drainage', 'Moist / cooler', 'Drier']
+
 === RF state classifier, TIME split: train 13 Oct to 5 Nov (2234 rows), test 6 to 13 Nov (795 rows) ===
-accuracy 0.933   macro-F1 0.964
-                        Saturated  Moist  Drier  Drier
-true Saturated                  7      0      0      0
-true Moist / cooler             0    265      4      0
-true Drier / higher pH          0     49    464      0
-true Drier / lower pH           0      0      0      6
-                   precision    recall  f1-score   support
+accuracy 0.932   macro F1 0.962
+                     Saturated  Rapid drainage  Moist / cooler  Drier
+true Saturated               7               0               0      0
+true Rapid drainage          0               6               0      0
+true Moist / cooler          0               0             246     23
+true Drier                   0               0              31    482
+                precision    recall  f1-score   support
 
-        Saturated       1.00      1.00      1.00         7
-   Moist / cooler       0.84      0.99      0.91       269
-Drier / higher pH       0.99      0.90      0.95       513
- Drier / lower pH       1.00      1.00      1.00         6
+     Saturated       1.00      1.00      1.00         7
+Rapid drainage       1.00      1.00      1.00         6
+Moist / cooler       0.89      0.91      0.90       269
+         Drier       0.95      0.94      0.95       513
 
-         accuracy                           0.93       795
-        macro avg       0.96      0.97      0.96       795
-     weighted avg       0.94      0.93      0.93       795
+      accuracy                           0.93       795
+     macro avg       0.96      0.96      0.96       795
+  weighted avg       0.93      0.93      0.93       795
 
-majority-class baseline accuracy: 0.645  (Drier / higher pH)
-feature importance: {'moisture_rel': np.float64(0.249), 'ph_rel': np.float64(0.216), 'temp_rel': np.float64(0.152), 'dmoist_1h': np.float64(0.069), 'dmoist_3h': np.float64(0.315)}
+majority class baseline accuracy: 0.645  (Drier)
+feature importance: {'moisture_rel': 0.245, 'ph_rel': 0.216, 'temp_rel': 0.158, 'dmoist_1h': 0.062, 'dmoist_3h': 0.319}
 
-=== RF state classifier, LEAVE-ONE-NODE-OUT (cluster + RF fit on 4 nodes, tested on the 5th) ===
-held_out   n  accuracy  macro_F1
- Node-01 578     0.908     0.919
- Node-02 612     0.908     0.879
- Node-03 576     0.898     0.835
- Node-04 635     0.921     0.691
- Node-05 628     0.930     0.865
+=== RF state classifier, LEAVE ONE NODE OUT ===
+held_out   n                                                            states  accuracy  macro_F1
+ Node-01 578 Saturated | Moist / cooler | Drier / higher pH | Drier / lower pH     0.919     0.928
+ Node-02 612 Saturated | Moist / cooler | Drier / higher pH | Drier / lower pH     0.923     0.875
+ Node-03 576 Saturated | Moist / cooler | Drier / higher pH | Drier / lower pH     0.915     0.884
+ Node-04 635 Saturated | Moist / cooler | Drier / higher pH | Drier / lower pH     0.932     0.700
+ Node-05 628               Saturated | Rapid drainage | Moist / cooler | Drier     0.947     0.924
 
 === State transitions (all nodes, consecutive hours only) ===
+Transition counts:
+                   Saturated  Moist / cooler  Drier / higher pH  Drier / lower pH
+Saturated                 10              14                 11                 1
+Moist / cooler             2             930                 42                36
+Drier / higher pH          4              28                874                17
+Drier / lower pH           1              29                 19               689
 Transition probabilities (row = state now, column = state next hour):
-                   Saturated  Moist  Drier  Drier
-Saturated               0.28   0.39   0.31   0.03
-Moist / cooler          0.00   0.92   0.04   0.04
-Drier / higher pH       0.00   0.03   0.95   0.02
-Drier / lower pH        0.00   0.04   0.03   0.93
+                   Saturated  Moist / cooler  Drier / higher pH  Drier / lower pH
+Saturated              0.278           0.389              0.306             0.028
+Moist / cooler         0.002           0.921              0.042             0.036
+Drier / higher pH      0.004           0.030              0.947             0.018
+Drier / lower pH       0.001           0.039              0.026             0.934
 
-Mean dwell time (hours in a row before changing):
-  Saturated              1.3 h   (n runs 30)
-  Moist / cooler         6.1 h   (n runs 181)
-  Drier / higher pH      5.9 h   (n runs 175)
-  Drier / lower pH       6.0 h   (n runs 135)
+Mean run length (consecutive hours in the same state; a gap ends a run):
+  Saturated             1.33 h
+  Moist / cooler        6.14 h
+  Drier / higher pH     5.94 h
+  Drier / lower pH      5.99 h
 
-After a Saturated hour ends, the next state is: {'Moist / cooler': 0.54, 'Drier / higher pH': 0.42, 'Drier / lower pH': 0.04}
-Recovery after a watering (hours until moisture is back within that node's normal range): median 1 h, mean 1.6 h, n=23 events
+After a saturated hour ends, the next state is: {'Moist / cooler': 0.54, 'Drier / higher pH': 0.42, 'Drier / lower pH': 0.04}
+Recovery after a saturated episode (hours until moisture is back within half an IQR of the node median): median 1.0 h, mean 1.7 h, max 7.0 h, n = 23 episodes
+wrote transition_counts.csv, transition_probabilities.csv, transitions_summary.json
 
-[completed in 6.3 s]
+[completed in 8.5 s]
 
 ------------------------------------------------------------------------------
 7. Baseline comparison and statistical tests
@@ -324,56 +344,74 @@ Recovery after a watering (hours until moisture is back within that node's norma
 $ python3 compare_models.py
 
 chronological: train 2234  test 795
-test state counts: {'Saturated': 7, 'Moist / cooler': 269, 'Drier / higher pH': 513, 'Drier / lower pH': 6}
-                       model  accuracy  balanced_accuracy  macro_f1  recall_Saturated  recall_Moist / cooler  recall_Drier / higher pH  recall_Drier / lower pH
-               random_forest    0.9333             0.9724    0.9638               1.0                 0.9851                    0.9045                      1.0
-         logistic_regression    0.9748             0.9898    0.9860               1.0                 0.9963                    0.9630                      1.0
-               decision_tree    0.6755             0.8084    0.8100               1.0                 0.4461                    0.7875                      1.0
-                    majority    0.6453             0.2500    0.1961               0.0                 0.0000                    1.0000                      0.0
-nearest_centroid (reference)    1.0000             1.0000    1.0000               NaN                    NaN                       NaN                      NaN
+states of the training period partition: ['Saturated', 'Rapid drainage', 'Moist / cooler', 'Drier']
+train state counts: {'Saturated': 34, 'Rapid drainage': 24, 'Moist / cooler': 1070, 'Drier': 1106}
+test state counts: {'Saturated': 7, 'Rapid drainage': 6, 'Moist / cooler': 269, 'Drier': 513}
+                       model  accuracy  balanced_accuracy  macro_f1  recall_Saturated  recall_Rapid drainage  recall_Moist / cooler  recall_Drier
+               random_forest  0.932075           0.963517  0.962013               1.0                    1.0               0.914498      0.939571
+         logistic_regression  0.974843           0.989811  0.986047               1.0                    1.0               0.996283      0.962963
+               decision_tree  0.675472           0.808405  0.809975               1.0                    1.0               0.446097      0.787524
+                    majority  0.645283           0.250000  0.196101               0.0                    0.0               0.000000      1.000000
+nearest_centroid (reference)  1.000000           1.000000  1.000000               NaN                    NaN                    NaN           NaN
 
 RF confusion matrix (rows true, columns predicted):
-                   Saturated  Moist / cooler  Drier / higher pH  Drier / lower pH
-Saturated                  7               0                  0                 0
-Moist / cooler             0             265                  4                 0
-Drier / higher pH          0              49                464                 0
-Drier / lower pH           0               0                  0                 6
+                Saturated  Rapid drainage  Moist / cooler  Drier
+Saturated               7               0               0      0
+Rapid drainage          0               6               0      0
+Moist / cooler          0               0             246     23
+Drier                   0               0              31    482
 
 McNemar, chronological test set:
                           comparison  b_rf_right_other_wrong  c_rf_wrong_other_right                             test    chi2        p   p_holm
-random_forest vs logistic_regression                       4                      37 chi square, continuity corrected  24.976 0.000001 0.000001
-      random_forest vs decision_tree                     245                      40 chi square, continuity corrected 146.021 0.000000 0.000000
-           random_forest vs majority                     278                      49 chi square, continuity corrected 158.972 0.000000 0.000000
+random_forest vs logistic_regression                       7                      41 chi square, continuity corrected  22.688 0.000002 0.000002
+      random_forest vs decision_tree                     230                      26 chi square, continuity corrected 160.973 0.000000 0.000000
+           random_forest vs majority                     259                      31 chi square, continuity corrected 177.686 0.000000 0.000000
+
+Leave one node out, mean and standard deviation over the five folds:
+                     accuracy_mean  accuracy_std  balanced_accuracy_mean  balanced_accuracy_std  macro_f1_mean  macro_f1_std
+model                                                                                                                       
+random_forest             0.927311      0.012990                0.894412               0.035941       0.862193      0.093727
+logistic_regression       0.985964      0.009499                0.947070               0.079287       0.940401      0.074354
+decision_tree             0.877617      0.020766                0.822158               0.083960       0.779526      0.110500
+majority                  0.405578      0.068455                0.266667               0.037268       0.152209      0.018850
 
 Leave one node out, macro F1 per fold:
 model     random_forest  logistic_regression  decision_tree  majority
 held_out                                                             
-Node-01          0.9194               0.9916         0.8370    0.1242
-Node-02          0.8786               0.8833         0.8307    0.1458
-Node-03          0.8350               0.8386         0.6613    0.1526
-Node-04          0.6908               0.7421         0.6641    0.1291
-Node-05          0.8655               0.9992         0.9046    0.1663
+Node-01        0.928086             0.991575       0.836958  0.124187
+Node-02        0.874701             0.883253       0.830650  0.145833
+Node-03        0.884386             0.838567       0.661339  0.152593
+Node-04        0.699895             0.989413       0.664105  0.172118
+Node-05        0.923896             0.999196       0.904580  0.166312
 
-mean (sd): {'random_forest': '0.838 (0.088)', 'logistic_regression': '0.891 (0.108)', 'decision_tree': '0.780 (0.111)', 'majority': '0.144 (0.017)'}
+mean (sd): {'random_forest': '0.862 (0.094)', 'logistic_regression': '0.940 (0.074)', 'decision_tree': '0.780 (0.110)', 'majority': '0.152 (0.019)'}
 
 Friedman over 5 folds, 4 models: chi2_F = 14.040, p = 0.0029;  Iman Davenport F = 58.500, p = 0.0000;  Nemenyi CD (alpha 0.05) = 2.098
-mean ranks: {'random_forest': 2.2, 'logistic_regression': 1.0, 'decision_tree': 2.8, 'majority': 4.0}
+mean ranks: {'random_forest': 1.8, 'logistic_regression': 1.2, 'decision_tree': 3.0, 'majority': 4.0}
+
+Random five fold on all readings (optimistic, reported for comparison only):
+                     accuracy_mean  accuracy_std  balanced_accuracy_mean  balanced_accuracy_std  macro_f1_mean  macro_f1_std
+model                                                                                                                       
+random_forest             0.965994      0.005919                0.968901               0.013862       0.968443      0.014182
+logistic_regression       0.991417      0.004426                0.975919               0.042204       0.974043      0.031039
+decision_tree             0.924724      0.009980                0.914045               0.040275       0.919596      0.021355
+majority                  0.366788      0.000720                0.250000               0.000000       0.134179      0.000192
 
 State identification, proposed vs standard approach (k = 4):
-                        approach  silhouette  davies_bouldin  nmi_with_node  transfer_ari_mean  transfer_ari_min  mean_run_hours  largest_cluster_share
-proposed: per node normalisation       0.252           1.171          0.011              0.755             0.517           10.86                  0.367
-standard: pooled standardisation       0.333           1.043          0.384              0.664             0.445           13.77                  0.576
+                        approach  silhouette  davies_bouldin  nmi_with_node  transfer_ari_mean  transfer_ari_min  mean_run_hours  largest_cluster_share  most_node_dominated_cluster  node_purity
+proposed: per node normalisation       0.252           1.171          0.011              0.755             0.517            5.76                  0.367                         0.45         0.24
+standard: pooled standardisation       0.333           1.043          0.384              0.664             0.445            6.42                  0.576                         1.00         0.48
 
 wrote comparison_*.csv and comparison_tests.json
 
-[completed in 7.9 s]
+[completed in 16.5 s]
 
 ------------------------------------------------------------------------------
 8. Forecasting against the no change baseline
 ------------------------------------------------------------------------------
 $ python3 forecast_test.py
 
-Forecasting test v2 (model predicts the CHANGE from now, inputs are recent changes) — train on first ~3.5 weeks of all nodes, test on the last week (Nov 6-13)
+Forecasting test (the model predicts the change from now; inputs are recent changes). Train on 13 October to 5 November, test on 6 to 13 November
 MAE = average size of the error (lower is better).  Naive = "stays the same".  Daily = "same as this hour yesterday".
 chosen minimum leaf size per target and horizon: {'moist_1h': 5, 'moist_3h': 200, 'moist_6h': 20, 'moist_12h': 20, 'moist_24h': 50, 'ph_1h': 5, 'ph_3h': 5, 'ph_6h': 5, 'ph_12h': 5, 'ph_24h': 20}
 
@@ -396,11 +434,11 @@ Target: ph (pH)
 Same test but hiding one node entirely (train on 4, forecast the 5th), moisture 6h ahead:
   hidden Node-01:  RF  3.44   naive  2.56     -35%
   hidden Node-02:  RF  1.63   naive  1.06     -53%
-  hidden Node-03:  RF  5.73   naive  6.19      +7%
+  hidden Node-03:  RF  5.73   naive  6.19      +8%
   hidden Node-04:  RF  1.28   naive  1.08     -19%
   hidden Node-05:  RF  0.84   naive  0.42     -99%
 
-[completed in 89.6 s]
+[completed in 101.2 s]
 
 ------------------------------------------------------------------------------
 9. Nutrient channels versus conductivity
@@ -439,7 +477,7 @@ genuinely measured channels do.
 
 wrote npk_ec_evidence.csv and table_npk_ec.tex
 
-[completed in 0.3 s]
+[completed in 0.5 s]
 
 ------------------------------------------------------------------------------
 10. Exploratory data analysis for Chapter 3
@@ -496,14 +534,14 @@ pH outside 3 to 10: 22
 out of range total, distinct readings (appendix): 81 = 2.7%
 
 === E. random forest settings (selected by tune_models.py) ===
-random_forest fixed {'n_estimators': 400, 'class_weight': 'balanced', 'bootstrap': True, 'random_state': 0} tuned {'min_samples_leaf': 2, 'max_features': 1, 'max_depth': 8} val macro F1 0.9678 configs 96
-decision_tree fixed {'class_weight': 'balanced', 'random_state': 0} tuned {'min_samples_leaf': 1, 'max_depth': 6} val macro F1 0.8909 configs 36
-logistic_regression fixed {'class_weight': 'balanced', 'solver': 'lbfgs', 'max_iter': 5000} tuned {'C': 10.0} val macro F1 0.9727 configs 7
+random_forest fixed {'n_estimators': 400, 'class_weight': 'balanced', 'bootstrap': True, 'random_state': 0} tuned {'min_samples_leaf': 1, 'max_features': 1, 'max_depth': None} val macro F1 0.96342 configs 96
+decision_tree fixed {'class_weight': 'balanced', 'random_state': 0} tuned {'min_samples_leaf': 1, 'max_depth': 6} val macro F1 0.890921 configs 36
+logistic_regression fixed {'class_weight': 'balanced', 'solver': 'lbfgs', 'max_iter': 5000} tuned {'C': 10.0} val macro F1 0.972675 configs 7
 
 === F. chronological split sizes ===
 train 2234   test 795   test share 26.2%
 
-[completed in 0.3 s]
+[completed in 0.4 s]
 
 ------------------------------------------------------------------------------
 11. Chapter 3 figures (thesis Figures 3 and 4)
@@ -512,7 +550,7 @@ $ python3 charts.py
 
 saved
 
-[completed in 5.5 s]
+[completed in 7.3 s]
 
 ------------------------------------------------------------------------------
 12. Supplementary transfer figure
@@ -521,31 +559,505 @@ $ python3 chart_lono.py
 
 saved
 
-[completed in 2.4 s]
+[completed in 3.6 s]
+
+------------------------------------------------------------------------------
+13. Chapter 4 analysis
+------------------------------------------------------------------------------
+$ python3 chapter4_analysis.py
+
+ k  silhouette  davies_bouldin  nmi_node  smallest  all_named                                                                             states  folds_same_set  ari_mean  ari_min  largest_share_shift largest_shift_fold largest_shift_state  largest_shift_fold_share  largest_shift_reference_share                                                                                                                                                                   folds_missing_states
+ 3       0.244           1.324     0.007        41       True                                                 Saturated | Moist / cooler | Drier               5     0.708    0.249                0.350            Node-01           Saturated                     0.359                          0.009                                                                                                                                                                                       
+ 4       0.252           1.171     0.011        40       True                  Saturated | Moist / cooler | Drier / higher pH | Drier / lower pH               4     0.755    0.517                0.256            Node-05    Drier / lower pH                     0.011                          0.267                                                                                                                                           Node-05: Drier / higher pH, Drier / lower pH
+ 5       0.263           1.026     0.015        30       True Saturated | Rapid drainage | Moist / cooler | Drier / higher pH | Drier / lower pH               4     0.779    0.601                0.358            Node-01      Rapid drainage                     0.365                          0.007                                                                                                           Node-01: Drier / higher pH, Drier / lower pH, Moist / cooler, Rapid drainage
+ 6       0.263           1.087     0.016        30      False         Saturated | Rapid drainage | Unnamed 1 | Unnamed 2 | Unnamed 3 | Unnamed 4               1     0.600    0.508                0.338            Node-03           Unnamed 4                     0.004                          0.342 Node-01: Rapid drainage; Node-02: Unnamed 1, Unnamed 2, Unnamed 3, Unnamed 4; Node-04: Unnamed 1, Unnamed 2, Unnamed 3, Unnamed 4; Node-05: Unnamed 1, Unnamed 2, Unnamed 3, Unnamed 4
+            state    n  share  nodes  moisture_med  ph_med  temp_med  moisture_rel  ph_rel  temp_rel  dmoist_3h  run_h  self_p  share_0710  share_test_week  share_from_3nov median_date
+        Saturated   40 0.0132      4         111.0    3.06      21.6         10.95   -7.97     -0.80       1.33   1.33   0.278        0.78             0.18             0.22  29 October
+   Moist / cooler 1111 0.3668      5          82.4    7.69      22.0          0.64   -0.05     -0.56      -0.02   6.14   0.921        0.17             0.08             0.27  29 October
+Drier / higher pH 1051 0.3470      5          80.0    7.72      22.8         -0.29    0.54      0.39      -0.09   5.94   0.947        0.13             0.19             0.19  21 October
+ Drier / lower pH  827 0.2730      5          78.9    7.47      22.5         -0.43   -0.96      0.08      -0.07   5.99   0.934        0.17             0.61             0.74 07 November
+ts          0     1     2     3     4
+node                                 
+Node-01  7.73  7.10  6.83  7.15  6.57
+Node-02  7.44  7.35  7.30  7.34  7.47
+Node-03  9.29  9.20  8.71  7.60  7.22
+Node-04  7.63  7.71  7.69  7.55  7.76
+Node-05  8.19  8.02  7.97  7.89  7.81
+   moisture_rel  ph_rel  temp_rel  dmoist_1h  dmoist_3h           state  n_train  n_test
+0         -0.06    0.39      0.38      -0.05      -0.02           Drier     1106     513
+1          0.59   -0.28     -0.58      -0.03      -0.01  Moist / cooler     1070     269
+2          4.13   -3.49     -0.63      -0.02       1.20       Saturated       34       7
+3          0.18    0.20     -0.10      -0.06      -4.32  Rapid drainage       24       6
+state           Drier  Moist / cooler  Saturated  Rapid drainage
+state                                                           
+Drier           0.000           1.343      5.932           4.336
+Moist / cooler  1.343           0.000      4.930           4.389
+Saturated       5.932           4.930      0.000           7.748
+Rapid drainage  4.336           4.389      7.748           0.000
+rapid drainage readings 30 preceded by saturation within 3 h: 22 {'Node-01': 14, 'Node-03': 12, 'Node-05': 3, 'Node-02': 1}
+inertia: training period best 3235.1 pH split 3339.3 | without Node 05 best 3857.3 pH split 3874.0
+ min_samples_leaf  max_features  max_depth  train_macro_f1  val_macro_f1
+                1             1          0        0.999628      0.963420
+                1             1          8        0.993348      0.953990
+                2             1          8        0.987420      0.946200
+                1             1         16        0.999628      0.940461
+                2             1          0        0.991469      0.938868
+                2             1         16        0.991469      0.937836
+                1             2         16        0.999628      0.932441
+                1             2          0        0.999628      0.932441
+ trees  train_log_loss  val_log_loss  train_macro_f1  val_macro_f1
+     1          1.8758        3.6748          0.9648        0.8894
+     2          0.5415        1.1743          0.9774        0.8968
+     5          0.0769        0.2173          0.9915        0.9274
+    10          0.0656        0.1661          0.9989        0.9460
+    20          0.0622        0.1883          0.9996        0.9565
+    50          0.0621        0.1825          1.0000        0.9678
+   100          0.0609        0.1862          0.9993        0.9645
+   150          0.0612        0.1922          0.9996        0.9668
+   200          0.0616        0.1868          0.9996        0.9668
+   300          0.0624        0.1884          0.9996        0.9624
+   400          0.0629        0.1853          0.9996        0.9634
+ trees  train_log_loss  val_log_loss  train_macro_f1  val_macro_f1
+     1          0.8874        2.1707          0.9754        0.8707
+     2          0.1858        1.0219          0.9906        0.8733
+     5          0.0284        0.5706          0.9896        0.8667
+    10          0.0275        0.4374          0.9974        0.8599
+    20          0.0280        0.4241          0.9981        0.8802
+    50          0.0291        0.4223          0.9978        0.8812
+   100          0.0295        0.4250          0.9985        0.8760
+   150          0.0305        0.3867          0.9989        0.8780
+   200          0.0302        0.3059          0.9981        0.8762
+   300          0.0300        0.3078          0.9981        0.8781
+   400          0.0305        0.3105          0.9974        0.8729
+ fraction      n  train    val  val_sd
+      0.1  152.0 1.0000 0.7993  0.0812
+      0.2  304.0 0.9989 0.9237  0.0326
+      0.4  607.0 0.9993 0.9522  0.0136
+      0.6  911.0 0.9996 0.9537  0.0111
+      0.8 1214.0 0.9998 0.9509  0.0130
+      1.0 1518.0 0.9996 0.9425     NaN
+{'random_forest': {'train_macro_f1': 1.0, 'test_macro_f1': 0.962, 'test_log_loss': 0.2758}, 'logistic_regression': {'train_macro_f1': 0.9858, 'test_macro_f1': 0.986, 'test_log_loss': 0.0586}}
+boundary margin, median correct 0.468 wrong 0.042
+errors (total, to the second nearest centre): {'chrono_random_forest': (54, 54), 'lono_random_forest': (219, 210), 'chrono_logistic_regression': (20, 20), 'lono_logistic_regression': (42, 36)}
+mean run length on each withheld node, fold vs reference: {'Node-01': {'fold': 4.28, 'reference': 4.22}, 'Node-02': {'fold': 5.42, 'reference': 5.67}, 'Node-03': {'fold': 5.94, 'reference': 5.76}, 'Node-04': {'fold': 6.29, 'reference': 6.29}, 'Node-05': {'fold': 6.61, 'reference': 7.85}}
+baseline from the training period only: {'states': ['Saturated', 'Moist / cooler', 'Drier / higher pH', 'Drier / lower pH'], 'counts_test': {'Drier / higher pH': 385, 'Drier / lower pH': 298, 'Moist / cooler': 105, 'Saturated': 7}, 'results': {'random_forest': {'accuracy': 0.8553, 'balanced_accuracy': 0.8688, 'macro_f1': 0.8669}, 'logistic_regression': {'accuracy': 0.9849, 'balanced_accuracy': 0.9822, 'macro_f1': 0.9434}}}
+{
+ "saturated_episodes": 30,
+ "saturated_episodes_by_node": {
+  "Node-01": 13,
+  "Node-03": 10,
+  "Node-02": 5,
+  "Node-05": 2
+ },
+ "saturated_longest_h": 2,
+ "saturated_episodes_over_1h": 10,
+ "r2_max_days_in_a_week": 4,
+ "r2_node_weeks_with_4plus_days": 2,
+ "r3_drier_runs_over_24h": 1,
+ "r3_longest_drier_run_h": 26,
+ "r5_valid_readings_ph_below_5_5": 14,
+ "r6_ec_median_by_node": {
+  "Node-01": 0.189,
+  "Node-02": 0.189,
+  "Node-03": 0.189,
+  "Node-04": 0.142,
+  "Node-05": 0.189
+ }
+}
+extra: {'raw_nmi_k5': 0.504, 'out_of_range': 81, 'ceiling_readings': 75, 'node04': {'median': 87.2, 'iqr': 5.9, 'max': 102.0, 'max_rel': 2.5}, 'sub_counts': {'Drier': 960, 'Moist / cooler': 516, 'Saturated': 23, 'Rapid drainage': 19}, 'val_counts': {'Moist / cooler': 554, 'Drier': 146, 'Saturated': 11, 'Rapid drainage': 5}, 'longest_run': {'Drier / higher pH': 24, 'Drier / lower pH': 23, 'Moist / cooler': 32, 'Saturated': 2}, 'ceiling_by_state': {'Moist / cooler': 45, 'Saturated': 30}, 'weekly_ph_max_departure': {'Node-01': 1.16, 'Node-02': 0.15, 'Node-03': 2.07, 'Node-04': 0.14, 'Node-05': 0.38}, 'ph_below_5_5_all': 36, 'ph_below_3_outside_sat': 2}
+
+wrote ch4_numbers.json and ch4_*.csv
+
+[completed in 46.7 s]
+
+------------------------------------------------------------------------------
+14. Thirty independent runs, Wilcoxon tests and execution times
+------------------------------------------------------------------------------
+$ python3 chapter4_robustness.py
+
+seed 0: ARI with seed 0 1.000  RF 0.9620  LR 0.9860  tree 0.8100
+seed 1: ARI with seed 0 0.982  RF 0.9594  LR 0.9928  tree 0.8094
+seed 2: ARI with seed 0 0.997  RF 0.9562  LR 0.9860  tree 0.8100
+seed 3: ARI with seed 0 1.000  RF 0.9499  LR 0.9943  tree 0.8094
+seed 4: ARI with seed 0 1.000  RF 0.9507  LR 0.9860  tree 0.8100
+seed 5: ARI with seed 0 0.975  RF 0.9612  LR 0.9928  tree 0.7899
+seed 6: ARI with seed 0 0.982  RF 0.9570  LR 0.9928  tree 0.7899
+seed 7: ARI with seed 0 0.981  RF 0.9572  LR 0.9881  tree 0.8101
+seed 8: ARI with seed 0 0.963  RF 0.9589  LR 0.9895  tree 0.7910
+seed 9: ARI with seed 0 1.000  RF 0.9557  LR 0.9868  tree 0.8109
+seed 10: ARI with seed 0 1.000  RF 0.9573  LR 0.9881  tree 0.8101
+seed 11: ARI with seed 0 0.975  RF 0.9518  LR 0.9928  tree 0.7899
+seed 12: ARI with seed 0 0.963  RF 0.9587  LR 0.9928  tree 0.8094
+seed 13: ARI with seed 0 0.970  RF 0.9565  LR 0.9868  tree 0.8109
+seed 14: ARI with seed 0 0.967  RF 0.9618  LR 0.9868  tree 0.8109
+seed 15: ARI with seed 0 0.977  RF 0.9596  LR 0.9868  tree 0.8109
+seed 16: ARI with seed 0 0.965  RF 0.9498  LR 0.9867  tree 0.8105
+seed 17: ARI with seed 0 1.000  RF 0.9583  LR 0.9860  tree 0.8100
+seed 18: ARI with seed 0 0.978  RF 0.9573  LR 0.9928  tree 0.8094
+seed 19: ARI with seed 0 0.973  RF 0.9529  LR 0.9860  tree 0.8100
+seed 20: ARI with seed 0 1.000  RF 0.9505  LR 0.9868  tree 0.8109
+seed 21: ARI with seed 0 0.963  RF 0.9565  LR 0.9881  tree 0.7906
+seed 22: ARI with seed 0 0.978  RF 0.9628  LR 0.9928  tree 0.8094
+seed 23: ARI with seed 0 0.965  RF 0.9536  LR 0.9928  tree 0.8094
+seed 24: ARI with seed 0 1.000  RF 0.9550  LR 0.9853  tree 0.8101
+seed 25: ARI with seed 0 1.000  RF 0.9544  LR 0.9702  tree 0.7960
+seed 26: ARI with seed 0 1.000  RF 0.9548  LR 0.9867  tree 0.8105
+seed 27: ARI with seed 0 0.982  RF 0.9562  LR 0.9868  tree 0.8109
+seed 28: ARI with seed 0 0.999  RF 0.9632  LR 0.9853  tree 0.8105
+seed 29: ARI with seed 0 0.981  RF 0.9615  LR 0.9928  tree 0.8094
+
+Across 30 independent runs:
+  random_forest        macro F1 0.9567 (sd 0.0039, 0.9498 to 0.9632)
+  logistic_regression  macro F1 0.9883 (sd 0.0046, 0.9702 to 0.9943)
+  decision_tree        macro F1 0.8063 (sd 0.0078, 0.7899 to 0.8109)
+  majority             macro F1 0.1970 (sd 0.0011, 0.1959 to 0.1984)
+
+Comparative matrix over the runs:
+              model                       measure      mean     sd   minimum    median   maximum
+      random_forest                      macro_f1    0.9567 0.0039    0.9498    0.9568    0.9632
+      random_forest             balanced_accuracy    0.9625 0.0036    0.9565    0.9635    0.9693
+      random_forest                      accuracy    0.9216 0.0077    0.9082    0.9214    0.9346
+logistic_regression                      macro_f1    0.9883 0.0046    0.9702    0.9868    0.9943
+logistic_regression             balanced_accuracy    0.9918 0.0023    0.9893    0.9903    0.9957
+logistic_regression                      accuracy    0.9800 0.0057    0.9736    0.9761    0.9899
+      decision_tree                      macro_f1    0.8063 0.0078    0.7899    0.8100    0.8109
+      decision_tree             balanced_accuracy    0.8027 0.0137    0.7722    0.8084    0.8109
+      decision_tree                      accuracy    0.6769 0.0011    0.6755    0.6767    0.6805
+           majority                      macro_f1    0.1970 0.0011    0.1959    0.1964    0.1984
+           majority             balanced_accuracy    0.2500 0.0000    0.2500    0.2500    0.2500
+           majority                      accuracy    0.6500 0.0059    0.6440    0.6472    0.6579
+ k means clustering within cluster sum of squares 4579.0300 0.0915 4578.9000 4579.1000 4579.1000
+ k means clustering                    silhouette    0.2519 0.0002    0.2515    0.2521    0.2522
+ k means clustering                Davies Bouldin    1.1722 0.0009    1.1711    1.1728    1.1732
+ k means clustering  agreement with the first run    0.9839 0.0143    0.9627    0.9818    1.0000
+
+Paired Wilcoxon signed rank over the runs, macro F1:
+                          comparison  runs  runs_proposed_better  runs_other_better  runs_tied  median_difference  statistic            p       p_holm
+random_forest vs logistic_regression    30                     0                 30          0            -0.0312        0.0 1.863000e-09 5.588000e-09
+      random_forest vs decision_tree    30                    30                  0          0             0.1481        0.0 1.863000e-09 5.588000e-09
+           random_forest vs majority    30                    30                  0          0             0.7602        0.0 1.863000e-09 5.588000e-09
+  state set identical to seed 0 in 30 of 30 seeds; ARI with seed 0 0.984 (min 0.963); inertia range 4578.9 to 4579.1
+  nearest centroid accuracy: 1.0000 to 1.0000
+Random Forest: fit 0.944 s, predict 96.46 ms
+Logistic regression: fit 0.024 s, predict 0.46 ms
+Classification tree: fit 0.007 s, predict 0.25 ms
+
+wrote ch4_seeds.csv, ch4_runs_matrix.csv, ch4_wilcoxon.csv, ch4_timing.csv and ch4_robustness.json
+
+[completed in 91.3 s]
+
+------------------------------------------------------------------------------
+15. Importance of each input and the effect of removing it
+------------------------------------------------------------------------------
+$ python3 feature_analysis.py
+
+Importance of each input (impurity inside the forest, and permutation on the test week):
+                     feature  forest_impurity  forest_impurity_sd  forest_permutation  forest_permutation_sd  logistic_permutation  logistic_permutation_sd
+                    moisture           0.2447              0.1383              0.1238                 0.0179                0.3214                   0.0239
+                          pH           0.2160              0.1155              0.1223                 0.0251                0.1091                   0.0153
+                 temperature           0.1578              0.0393              0.1635                 0.0106                0.1910                   0.0078
+   moisture change, one hour           0.0624              0.0402              0.0038                 0.0023               -0.0000                   0.0003
+moisture change, three hours           0.3192              0.0869              0.2513                 0.0090                0.2512                   0.0078
+
+Logistic regression coefficients (rows states, columns inputs, inputs on a common scale):
+                moisture     pH  temperature  moisture change, one hour  moisture change, three hours
+Drier             -7.216  8.029        8.665                     -0.008                         2.675
+Moist / cooler     2.779 -2.823       -6.510                      0.171                         1.718
+Rapid drainage    -3.724  1.179        2.149                     -0.035                        -7.036
+Saturated          8.160 -6.385       -4.304                     -0.129                         2.643
+
+Removal from the classifier only, states unchanged:
+                     removed               model  accuracy  balanced_accuracy  macro_f1  lono_macro_f1_mean  lono_macro_f1_sd  test_macro_f1_change
+                        none       random_forest  0.932075           0.963517  0.962013            0.862193          0.093727              0.000000
+                        none logistic_regression  0.974843           0.989811  0.986047            0.940401          0.074354              0.000000
+                        none       decision_tree  0.675472           0.808405  0.809975            0.779527          0.110500              0.000000
+                    moisture       random_forest  0.791195           0.918661  0.892739            0.759298          0.090246             -0.069274
+                    moisture logistic_regression  0.749686           0.899927  0.798405            0.730548          0.095135             -0.187642
+                    moisture       decision_tree  0.766038           0.908473  0.880322            0.681734          0.113826              0.070347
+                          pH       random_forest  0.842767           0.893554  0.903390            0.687002          0.171929             -0.058623
+                          pH logistic_regression  0.835220           0.881789  0.893874            0.681552          0.184570             -0.092173
+                          pH       decision_tree  0.855346           0.903732  0.912656            0.669945          0.183392              0.102681
+                 temperature       random_forest  0.743396           0.825880  0.829797            0.742583          0.075468             -0.132216
+                 temperature logistic_regression  0.733333           0.825076  0.829014            0.838676          0.045890             -0.157033
+                 temperature       decision_tree  0.749686           0.818592  0.818709            0.693751          0.101179              0.008734
+   moisture change, one hour       random_forest  0.915723           0.964255  0.954443            0.871443          0.107099             -0.007570
+   moisture change, one hour logistic_regression  0.977358           0.990786  0.987422            0.940974          0.072006              0.001375
+   moisture change, one hour       decision_tree  0.675472           0.808405  0.809975            0.791609          0.119349              0.000000
+moisture change, three hours       random_forest  0.914465           0.717133  0.706144            0.810053          0.117124             -0.255869
+moisture change, three hours logistic_regression  0.586164           0.688794  0.603635            0.853614          0.134600             -0.382412
+moisture change, three hours       decision_tree  0.781132           0.654425  0.663646            0.710943          0.081718             -0.146329
+       both moisture changes       random_forest  0.904403           0.713677  0.701518            0.854990          0.144184             -0.260495
+       both moisture changes logistic_regression  0.583648           0.687819  0.602895            0.851408          0.131892             -0.383152
+       both moisture changes       decision_tree  0.784906           0.657214  0.665170            0.720629          0.089242             -0.144805
+          pH and temperature       random_forest  0.733333           0.807836  0.804116            0.608003          0.182594             -0.157897
+          pH and temperature logistic_regression  0.701887           0.782392  0.763341            0.629440          0.211685             -0.222706
+          pH and temperature       decision_tree  0.696855           0.743448  0.738015            0.557325          0.173620             -0.071960
+
+Removal from the clustering as well, states re derived:
+                     removed                                                            states  same_state_set  folds_with_the_same_set  ari_with_reference  share_of_readings_reassigned  random_forest_macro_f1  logistic_regression_macro_f1
+                        none               Saturated | Rapid drainage | Moist / cooler | Drier            True                        3              1.0000                        0.0000                0.962013                      0.986047
+                    moisture               Saturated | Rapid drainage | Moist / cooler | Drier            True                        4              0.6165                        0.1128                0.977305                      0.998710
+                          pH               Saturated | Rapid drainage | Moist / cooler | Drier            True                        4              0.5667                        0.1392                0.902273                      0.982714
+                 temperature               Saturated | Rapid drainage | Moist / cooler | Drier            True                        3              0.4440                        0.1737                0.953082                      0.997966
+   moisture change, one hour               Saturated | Rapid drainage | Moist / cooler | Drier            True                        3              0.9983                        0.0004                0.954783                      0.987462
+moisture change, three hours Saturated | Moist / cooler | Drier / higher pH | Drier / lower pH           False                        4              0.4861                           NaN                0.947695                      0.993906
+       both moisture changes Saturated | Moist / cooler | Drier / higher pH | Drier / lower pH           False                        5              0.4879                           NaN                0.945837                      0.987166
+          pH and temperature               Saturated | Rapid drainage | Moist / cooler | Drier            True                        5              0.2436                        0.2739                0.922360                      0.961607
+
+wrote ch4_importance.csv, ch4_lr_coefficients.csv, ch4_ablation_classifier.csv, ch4_ablation_clustering.csv, ch4_feature_summary.json
+
+[completed in 99.7 s]
+
+------------------------------------------------------------------------------
+16. Scaling and the limits of the approach
+------------------------------------------------------------------------------
+$ python3 scaling.py
+
+    223 readings from the record: k means 0.028 s, forest 0.752 s
+    558 readings from the record: k means 0.044 s, forest 0.946 s
+   1117 readings from the record: k means 0.052 s, forest 0.882 s
+   1676 readings from the record: k means 0.062 s, forest 0.899 s
+   2234 readings from the record: k means 0.075 s, forest 0.922 s
+   4468 readings, synthetic: k means 0.101 s, forest 1.142 s
+  11170 readings, synthetic: k means 0.784 s, forest 2.101 s
+  22340 readings, synthetic: k means 1.174 s, forest 3.889 s
+  44680 readings, synthetic: k means 2.224 s, forest 7.731 s
+  73722 readings, synthetic: k means 2.651 s, forest 12.410 s
+
+fitted power law exponents above 4000 readings: {'kmeans_seconds': 1.117, 'forest_fit_seconds': 0.862, 'logistic_fit_seconds': 1.137}
+2 nodes (879 readings): Saturated | Rapid drainage | Moist / cooler | Drier
+3 nodes (1300 readings): Saturated | Rapid drainage | Moist / cooler | Drier
+4 nodes (1770 readings): Saturated | Rapid drainage | Moist / cooler | Drier
+5 nodes (2234 readings): Saturated | Rapid drainage | Moist / cooler | Drier
+
+cost of the clustering from two to eight states: {2: 0.0443, 3: 0.0593, 4: 0.0717, 5: 0.0801, 6: 0.0817, 7: 0.1129, 8: 0.116}
+first 25% of the training period (559 readings): Saturated | Rapid drainage | Moist / cooler | Drier
+first 50% of the training period (1117 readings): Saturated | Rapid drainage | Moist / cooler | Drier
+first 75% of the training period (1675 readings): Saturated | Rapid drainage | Moist / cooler | Drier
+first 100% of the training period (2234 readings): Saturated | Rapid drainage | Moist / cooler | Drier
+
+estimated time for a complete refit:
+ nodes     period  readings  kmeans_seconds  forest_fit_seconds  refit_seconds  inside_an_hourly_cycle
+     5  one month      3648             0.1                 0.9            1.0                    True
+     5 six months     21888             1.0                 4.1            5.1                    True
+     5   one year     43776             2.1                 7.5            9.5                    True
+     5 five years    218880            12.5                29.9           42.4                    True
+    20  one month     14592             0.6                 2.9            3.5                    True
+    20 six months     87552             4.5                13.6           18.1                    True
+    20   one year    175104             9.7                24.7           34.4                    True
+    20 five years    875520            58.7                98.9          157.6                    True
+   100  one month     72960             3.7                11.6           15.3                    True
+   100 six months    437760            27.0                54.4           81.5                    True
+   100   one year    875520            58.7                98.9          157.6                    True
+   100 five years   4377600           354.2               396.2          750.4                    True
+
+peak memory of the process while fitting 73722 readings: 330.1 MB
+
+wrote ch4_scaling_readings.csv, ch4_scaling_nodes.csv, ch4_scaling_states.csv, ch4_scaling_length.csv, ch4_viability.csv and ch4_scaling.json
+
+[completed in 129.3 s]
+
+------------------------------------------------------------------------------
+17. Solution quality and the optimality gap
+------------------------------------------------------------------------------
+$ python3 solution_quality.py
+
+total scatter 7988.6, eigenvalues [1.028, 0.597, 0.46, 0.33, 0.223]
+relaxation lower bound on the objective at k = 4: 1674.3
+best known objective after two thousand restarts: 4578.925 (search took 5.5 s)
+states of the best known solution: ['Saturated', 'Moist / cooler', 'Drier / higher pH', 'Drier / lower pH']
+   1 restarts: objective 4694.255 (sd 161.441), within a hundredth of a percent of the best known value in 4 of 20 seeds, 0.003 s
+   2 restarts: objective 4604.290 (sd 85.491), within a hundredth of a percent of the best known value in 8 of 20 seeds, 0.007 s
+   5 restarts: objective 4579.312 (sd 0.337), within a hundredth of a percent of the best known value in 14 of 20 seeds, 0.016 s
+  10 restarts: objective 4579.137 (sd 0.130), within a hundredth of a percent of the best known value in 20 of 20 seeds, 0.026 s
+  30 restarts: objective 4579.040 (sd 0.084), within a hundredth of a percent of the best known value in 20 of 20 seeds, 0.084 s
+ 100 restarts: objective 4578.946 (sd 0.032), within a hundredth of a percent of the best known value in 20 of 20 seeds, 0.275 s
+
+over the 30 runs of the comparative matrix: objective 4578.9 to 4579.1, gap to the best known value at most 0.0038 percent
+
+wrote ch4_quality_budget.csv, ch4_quality_runs.csv and ch4_quality.json
+
+[completed in 16.6 s]
+
+------------------------------------------------------------------------------
+18. Independent verification of the baselines, the tests and the bound
+------------------------------------------------------------------------------
+$ python3 verify_baselines.py
+
+                                                            quantity  value_used  independent_check    difference                                                                                                                     method_of_check  stochastic
+                  Majority class baseline, accuracy on the test week    0.645283           0.645283  0.000000e+00                                                                          share of the test readings in that state, counted directly       False
+           Nearest centroid reference, agreement with the clustering    1.000000           1.000000  0.000000e+00                                                                           distance to every centre computed by hand, smallest taken       False
+             Within cluster sum of squares of the training partition 3235.079408        3235.079408  0.000000e+00                                                                 squared distance of every reading to its own centre, summed by hand       False
+                            Random Forest, macro F1 on the test week    0.962013           0.962013  0.000000e+00                                                                      precision and recall per state taken from the confusion matrix       False
+                   Random Forest, balanced accuracy on the test week    0.963517           0.963517 -0.000000e+00                                                                             mean of the per state recalls from the confusion matrix       False
+               McNemar statistic, forest against logistic regression   22.687500          22.687500  0.000000e+00                                                                                            statsmodels 0.15.0, corrected chi square       False
+                 McNemar p value, forest against logistic regression    0.000002           0.000002  0.000000e+00                                                                                            statsmodels 0.15.0, corrected chi square       False
+                     Friedman statistic over the five withheld nodes   14.040000          14.040000 -0.000000e+00                                                                      the formula of Section 3.7.6 applied to the mean ranks by hand       False
+                  Mutual information between state and node identity    0.011190           0.011190  0.000000e+00                                                                entropies and mutual information computed from the contingency table       False
+ Persistence baseline, moisture six hours ahead, mean absolute error    1.523176           1.523176 -1.010000e-07                                                                       mean of the absolute differences on the saved evaluation rows       False
+     Forest regressor, moisture six hours ahead, mean absolute error    2.074078           2.074078  2.560000e-07                                                                       mean of the absolute differences on the saved evaluation rows       False
+    Forecast skill relative to persistence, moisture six hours ahead   -0.361680          -0.361680 -4.530000e-07                                                                                         one minus the ratio of the two errors above       False
+Wilcoxon statistic, forest against logistic regression over the runs    0.000000           0.000000  0.000000e+00                                                                                 smaller of the two signed rank sums, ranked by hand       False
+                  Relaxation lower bound on the clustering objective 1674.339634        1674.339634  6.800000e-08                                                         total scatter minus n times the three largest eigenvalues, computed by hand       False
+       Permutation importance of temperature for logistic regression    0.191000           0.188424  2.575802e-03 thirty fresh permutations of that column by hand; a second random draw, so the two agree only to within the spread of a permutation        True
+
+largest disagreement between the value used and its independent check, over the checks that must agree exactly: 4.53e-07
+stochastic check, permutation importance of temperature for logistic regression: 0.1910 against 0.1884
+
+[completed in 2.9 s]
+
+------------------------------------------------------------------------------
+19. Stability, recognisability and the red noise comparison
+------------------------------------------------------------------------------
+$ python3 validation_tests.py
+
+reference states : ['Saturated', 'Moist / cooler', 'Drier / higher pH', 'Drier / lower pH']
+reference sizes  : {'Saturated': 40, 'Moist / cooler': 1111, 'Drier / higher pH': 1051, 'Drier / lower pH': 827} total 3029
+jaccard, whole days     : Saturated 0.903 (0.007)  Moist / cooler 0.811 (0.004)  Drier / higher pH 0.821 (0.006)  Drier / lower pH 0.758 (0.009)
+jaccard, single readings: Saturated 0.934 (0.004)  Moist / cooler 0.920 (0.003)  Drier / higher pH 0.931 (0.004)  Drier / lower pH 0.922 (0.006)
+generating surrogates
+run length against the surrogate records:
+  Saturated            observed   1.33 h   surrogate 95th   1.68 h   spread 0.34 h   exceeds False
+  Moist / cooler       observed   6.14 h   surrogate 95th   3.80 h   spread 0.22 h   exceeds True
+  Drier / higher pH    observed   5.94 h   surrogate 95th   3.68 h   spread 0.27 h   exceeds True
+  Drier / lower pH     observed   5.99 h   surrogate 95th   3.43 h   spread 0.23 h   exceeds True
+Node-01: k 4, minimum 0.334 against 0.458, pooled bar 0.919 | Drier / lower pH 0.334 (n 536), Drier / higher pH 0.505 (n 14), Saturated 1.000 (n 17), Moist / cooler 0.455 (n 11)
+Node-02: k 6, minimum 0.555 against 0.493, pooled bar 0.836 | Drier / lower pH 0.564 (n 178), Drier / higher pH 0.591 (n 134), Saturated 0.597 (n 23), Moist / cooler 0.555 (n 277)
+Node-03: k 5, minimum 0.487 against 0.455, pooled bar 0.848 | Drier / lower pH 0.487 (n 267), Drier / higher pH 0.681 (n 226), Saturated 0.718 (n 13), Moist / cooler 0.865 (n 70)
+Node-04: k 6, minimum 0.500 against 0.485, pooled bar 0.888 | Drier / lower pH 0.507 (n 167), Drier / higher pH 0.539 (n 224), Saturated 1.000 (n 17), Moist / cooler 0.500 (n 227)
+Node-05: k 6, minimum 0.500 against 0.499, pooled bar 0.962 | Drier / lower pH 0.806 (n 157), Drier / higher pH 0.789 (n 151), Saturated 0.500 (n 4), Moist / cooler 0.762 (n 316)
+
+summary per state
+  Saturated            jaccard 0.903 (stable)   prediction strength 0.500 to 1.000   folds at 0.8 2/5
+  Moist / cooler       jaccard 0.811 (stable)   prediction strength 0.455 to 0.865   folds at 0.8 1/5
+  Drier / higher pH    jaccard 0.821 (stable)   prediction strength 0.505 to 0.789   folds at 0.8 0/5
+  Drier / lower pH     jaccard 0.758 (stable)   prediction strength 0.334 to 0.806   folds at 0.8 1/5
+folds whose minimum beats its matched reference level: 4 of 5
+
+wrote validation_stability.csv validation_prediction_strength.csv validation_folds.csv validation_persistence.csv validation_tests.json
+
+[completed in 194.8 s]
+
+------------------------------------------------------------------------------
+20. Chapter 4 figures (thesis Figures 5 to 12)
+------------------------------------------------------------------------------
+$ python3 chapter4_figures.py
+
+saved fig4_1_states_time.png
+saved fig4_2_transfer.png
+saved fig4_3_tuning_curves.png
+saved fig4_4_loss_curves.png
+saved fig4_5_confusion.png
+saved fig4_6_lono_boxplot.png
+saved fig4_8_seeds.png
+saved fig4_7_forecast.png
+
+[completed in 5.3 s]
+
+------------------------------------------------------------------------------
+21. Chapter 4 figures (thesis Figures 13 to 19)
+------------------------------------------------------------------------------
+$ python3 chapter4_figures_m4.py
+
+saved fig4_9_importance.png
+saved fig4_10_ablation.png
+saved fig4_11_scaling.png
+saved fig4_12_quality.png
+saved fig4_13_critical_difference.png
+saved fig4_14_tradeoff.png
+saved fig4_15_validation.png
+
+wrote fig4_9 to fig4_15
+
+[completed in 3.5 s]
+
+------------------------------------------------------------------------------
+22. Chapter 4 text, every number filled from the outputs
+------------------------------------------------------------------------------
+$ python3 write_ch4.py results_and_discussion.tex
+
+wrote results_and_discussion.tex
+
+[completed in 0.6 s]
 
 ==============================================================================
 OUTPUT FILES
 ==============================================================================
-  best_configs.json                         1,037 bytes   sha c8b42ed8e000a12a
-  comparison_chronological.csv                392 bytes   sha 3c8def2dc384b247
-  comparison_clustering.csv                   271 bytes   sha e07bfee3ccd12b98
-  comparison_lono_folds.csv                 1,449 bytes   sha 65b0d773912365d3
-  comparison_tests.json                     1,064 bytes   sha 92dcdc50c7ff6029
-  fig1_clusters_vs_nodes.png              289,105 bytes   sha 388b42cb4a1a271b
-  fig2_what_changes_over_time.png         300,774 bytes   sha afff31641779bdb1
-  fig3_leave_one_node_out.png             159,565 bytes   sha 5739296960f20b82
-  forecast_lono.csv                           202 bytes   sha c9d162ac6cdd0139
-  forecast_results.csv                        558 bytes   sha 8fef742caf58db41
-  forecast_tuning.csv                       1,443 bytes   sha 62ecf5dcfab81e7d
-  lono_summary_seed0_k4.csv                   308 bytes   sha 4457dba95c416116
+  best_configs.json                         1,056 bytes   sha c2a846b43c3a4ba8
+  ch4_ablation_classifier.csv               2,155 bytes   sha 1e97bb58c7442fe4
+  ch4_ablation_clustering.csv               1,020 bytes   sha 74535c444630111d
+  ch4_confusion_lr.csv                        130 bytes   sha ecdc29b30a097d85
+  ch4_feature_summary.json                    552 bytes   sha 2e60d160764b89e9
+  ch4_importance.csv                          417 bytes   sha 2274ce9860fea2a7
+  ch4_k_selection.csv                       1,123 bytes   sha ebd6b85b698b5ed1
+  ch4_learning_curve.csv                      206 bytes   sha 20eb6460b65a4344
+  ch4_loss_curve.csv                          401 bytes   sha 5400b4380fb86c8c
+  ch4_lr_coefficients.csv                     258 bytes   sha a8315f92c761a9d6
+  ch4_numbers.json                         22,280 bytes   sha 75f4c31f9374ad75
+  ch4_quality.json                          2,551 bytes   sha d67bea05c68c6d97
+  ch4_quality_budget.csv                      603 bytes   sha a13c30e7d899963f
+  ch4_quality_runs.csv                        787 bytes   sha 041ba779a2afe2c4
+  ch4_robustness.json                      31,155 bytes   sha ff1c022406b77291
+  ch4_runs_matrix.csv                       1,060 bytes   sha c5835ebd96b77956
+  ch4_scaling.json                            515 bytes   sha 57ea5145692f3d4c
+  ch4_scaling_length.csv                      373 bytes   sha 52b3bb2c111a3a8e
+  ch4_scaling_nodes.csv                       495 bytes   sha acd7d839e99b6ce5
+  ch4_scaling_readings.csv                    800 bytes   sha c8861db3afa96c41
+  ch4_scaling_states.csv                      190 bytes   sha 18af40b7faf2158c
+  ch4_seeds.csv                             8,447 bytes   sha a9c71c0ef0c8ae6a
+  ch4_state_profiles.csv                      567 bytes   sha b036bbdddf3e5f15
+  ch4_timing.csv                              151 bytes   sha 195ecc26ba410181
+  ch4_verification.csv                      2,321 bytes   sha 07cb0bdda5cfe9bc
+  ch4_viability.csv                           560 bytes   sha a186c167ba8cc88d
+  ch4_wilcoxon.csv                            320 bytes   sha 3bd006e4aeed18b9
+  comparison_chronological.csv                416 bytes   sha 6ad64220fd06ba26
+  comparison_clustering.csv                   328 bytes   sha 19fc1aa75597065d
+  comparison_lono_folds.csv                 2,263 bytes   sha 427420890c9847df
+  comparison_lono_summary.csv                 372 bytes   sha 73fa1839d167c444
+  comparison_random_kfold.csv                 367 bytes   sha b8d4c08f713460f1
+  comparison_tests.json                     3,033 bytes   sha 4eae727668b073c8
+  fig1_clusters_vs_nodes.png              303,623 bytes   sha d81383cc1037a608
+  fig2_what_changes_over_time.png         305,106 bytes   sha c897da0e3c0be719
+  fig3_leave_one_node_out.png             236,907 bytes   sha 1cbd57f8c77dbf39
+  fig4_10_ablation.png                    173,576 bytes   sha 7234ef8a9b1084ee
+  fig4_11_scaling.png                     172,264 bytes   sha 79d84fc4a612c94d
+  fig4_12_quality.png                     125,893 bytes   sha ffcfd60f1550bf3a
+  fig4_13_critical_difference.png          59,141 bytes   sha 4a473a3397e439db
+  fig4_14_tradeoff.png                     78,239 bytes   sha 81ff98023682f441
+  fig4_15_validation.png                  107,495 bytes   sha 873cb8d52b2913fd
+  fig4_1_states_time.png                  169,177 bytes   sha 1e25b5c2fd5ef6c8
+  fig4_2_transfer.png                     115,959 bytes   sha 856419635f15a2ff
+  fig4_3_tuning_curves.png                309,907 bytes   sha caef597c5e7d0585
+  fig4_4_loss_curves.png                  174,926 bytes   sha 1737994143534b62
+  fig4_5_confusion.png                    113,102 bytes   sha 8f0499b251401faf
+  fig4_6_lono_boxplot.png                  70,515 bytes   sha a7f4fb647ab8bffa
+  fig4_7_forecast.png                     153,346 bytes   sha 2055c7b7378c1db9
+  fig4_8_seeds.png                        150,665 bytes   sha 686f802b56b904e2
+  fig4_9_importance.png                   152,508 bytes   sha 84377718df674b6d
+  forecast_lono.csv                           202 bytes   sha 59d71e8951492706
+  forecast_results.csv                        557 bytes   sha 5df330d3c70697e6
+  forecast_rows_moist6.csv                 54,245 bytes   sha 97f47924bf9f7480
+  forecast_tuning.csv                       1,443 bytes   sha 57e0b4286beab00f
+  lono_shares_seed0_k4.csv                  1,392 bytes   sha 69f1c2f534909923
+  lono_summary_seed0_k4.csv                   874 bytes   sha 1d8a54864ded7309
   npk_ec_evidence.csv                         601 bytes   sha 07f8fb0f8b66a53a
+  pipeline_step_times.csv                   1,207 bytes   sha 9e920b10f0e2e8a6
+  raw_cluster_scan.csv                        278 bytes   sha 509342c59c2fc000
+  results_and_discussion.tex              108,991 bytes   sha ba30baf7ec34d526
   soil_clean.csv                          425,990 bytes   sha fd001aedfe1a019e
   soil_features.csv                       670,272 bytes   sha d963c0e985b6c54b
   soil_states_k4.csv                      713,791 bytes   sha 634b51a3795f2500
   table_npk_ec.tex                          1,287 bytes   sha 6931634632f5060f
-  tuning_decision_tree.csv                    761 bytes   sha 649f09aec491bcab
-  tuning_logistic_regression.csv              159 bytes   sha cbc82ff008b32934
-  tuning_random_forest.csv                  2,113 bytes   sha b6f49ed8952fb471
+  transition_counts.csv                       168 bytes   sha ef82ed0b9d7d4096
+  transition_probabilities.csv                232 bytes   sha ca0ad5fb513fce90
+  transitions_summary.json                  1,182 bytes   sha e3fb2a432fec834f
+  tuning_decision_tree.csv                    903 bytes   sha 153f161a4e2c4b43
+  tuning_logistic_regression.csv              187 bytes   sha d72f6d0fb1cbc917
+  tuning_random_forest.csv                  2,531 bytes   sha ec6e5331acaa00de
+  validation_persistence.csv                  323 bytes   sha 6774dbcb31f0c0cc
+  validation_prediction_strength.csv        1,120 bytes   sha 16f4eefc8dae4a4d
+  validation_stability.csv                    525 bytes   sha e7d94d98c1e3087d
+  validation_tests.json                    10,307 bytes   sha 45f46b2eae3c408b
 
 ==============================================================================
 FAILED STEPS: none

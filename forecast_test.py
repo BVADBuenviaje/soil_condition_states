@@ -23,7 +23,7 @@ def make(g):
 h = pd.concat([make(g) for _,g in h.groupby('node')])
 feat=[c for c in h.columns if '_lag' in c or c.endswith('_d3') or c in ('sin_h','cos_h')]
 split = pd.Timestamp('2025-11-06')
-print('Forecasting test v2 (model predicts the CHANGE from now, inputs are recent changes) — train on first ~3.5 weeks of all nodes, test on the last week (Nov 6-13)')
+print('Forecasting test (the model predicts the change from now; inputs are recent changes). Train on 13 October to 5 November, test on 6 to 13 November')
 print('MAE = average size of the error (lower is better).  Naive = "stays the same".  Daily = "same as this hour yesterday".')
 VAL_START = pd.Timestamp('2025-10-30'); LEAVES = [5, 20, 50, 100, 200]
 tune_rows, chosen = [], {}
@@ -54,6 +54,9 @@ for target,unit in (('moist','% moisture'),('ph','pH')):
         r=mae(rf.predict(te[feat])+te[f'naive_{target}_{H}']); nv=mae(te[f'naive_{target}_{H}']); dy=mae(te[f'daily_{target}_{H}'])
         print(f'  {H:3d}h   {L:4d}   {r:5.2f}   {nv:5.2f}   {dy:5.2f}     {100*(nv-r)/nv:+5.0f}%')
         rows.append(dict(target=target,horizon=H,min_samples_leaf=L,rf=r,naive=nv,daily=dy,skill=1-r/nv,n_test=len(te)))
+        if target=='moist' and H==6:
+            te[['node','ts',y,f'naive_{target}_{H}',f'daily_{target}_{H}']].assign(
+                rf=rf.predict(te[feat])+te[f'naive_{target}_{H}']).round(6).to_csv('forecast_rows_moist6.csv', index=False)
 print('\nSame test but hiding one node entirely (train on 4, forecast the 5th), moisture 6h ahead:')
 H=6; y=f'y_moist_{H}'; cols=feat+[y,f'naive_moist_{H}']; L=chosen[('moist',H)]; lono_rows=[]
 for n in sorted(h.node.unique()):

@@ -4,7 +4,7 @@ from sklearn.ensemble import RandomForestClassifier
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import f1_score
-from common import load, state_labels, ORDER, TRAIN_START, VAL_START, TEST_START
+from common import load, state_labels, present, TRAIN_START, VAL_START, TEST_START
 warnings.filterwarnings('ignore')
 
 d, X = load()
@@ -14,6 +14,8 @@ val   = ((d.ts >= VAL_START) & (d.ts < TEST_START)).values
 y_train_all, = state_labels(X[train])
 y = np.empty(len(d), dtype=object); y[train] = y_train_all
 ys, yv = y[sub], y[val]
+ORDER = present(y_train_all)
+print('states of the training period partition:', ORDER)
 print(f'sub training {sub.sum()} readings   validation {val.sum()} readings   (test week untouched)')
 print('state counts, sub training :', pd.Series(ys).value_counts().reindex(ORDER).fillna(0).astype(int).to_dict())
 print('state counts, validation   :', pd.Series(yv).value_counts().reindex(ORDER).fillna(0).astype(int).to_dict())
@@ -49,7 +51,7 @@ for name, g in GRIDS.items():
     for combo in itertools.product(*[g['grid'][k] for k in keys]):
         p = dict(zip(keys, combo))
         tr_f1, va_f1 = score(g['build'](p, g['fixed']))
-        rows.append({**p, 'train_macro_f1': round(tr_f1, 4), 'val_macro_f1': round(va_f1, 4)})
+        rows.append({**p, 'train_macro_f1': round(tr_f1, 6), 'val_macro_f1': round(va_f1, 6)})
     res = pd.DataFrame(rows)
     res.to_csv(f'tuning_{name}.csv', index=False)
     top = res.val_macro_f1.max()

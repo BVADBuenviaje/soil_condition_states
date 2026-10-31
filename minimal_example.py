@@ -2,6 +2,7 @@ import sys, openpyxl, numpy as np, pandas as pd, warnings
 from sklearn.cluster import KMeans
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import accuracy_score, balanced_accuracy_score, f1_score
+from common import name_clusters
 warnings.filterwarnings('ignore')
 XLSX = sys.argv[1] if len(sys.argv) > 1 else 'data/One_Month_Calibrated_Data.xlsx'
 
@@ -29,11 +30,7 @@ X = d[FEAT].clip(-5, 5).values
 
 train = (d.ts < pd.Timestamp('2025-11-06')).values; test = ~train
 km = KMeans(4, n_init=30, random_state=0).fit(X[train])
-c = pd.DataFrame(km.cluster_centers_, columns=FEAT)
-name = {c.moisture_rel.idxmax(): 'Saturated'}
-lo, mid, hi = sorted([i for i in range(4) if i not in name], key=lambda i: c.loc[i, 'moisture_rel'])
-hiph, loph = (lo, mid) if c.loc[lo, 'ph_rel'] > c.loc[mid, 'ph_rel'] else (mid, lo)
-name.update({hiph: 'Drier / higher pH', loph: 'Drier / lower pH', hi: 'Moist / cooler'})
+name = name_clusters(km.cluster_centers_)
 y_train = np.array([name[i] for i in km.labels_]); y_test = np.array([name[i] for i in km.predict(X[test])])
 
 rf = RandomForestClassifier(n_estimators=400, min_samples_leaf=2, max_features=1, max_depth=8,

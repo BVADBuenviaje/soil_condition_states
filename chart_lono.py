@@ -1,9 +1,16 @@
 import pandas as pd, numpy as np, warnings
 import matplotlib; matplotlib.use('Agg')
 import matplotlib.pyplot as plt
+from PIL import Image
 from matplotlib.patches import Patch
 from sklearn.cluster import KMeans
 from scipy.optimize import linear_sum_assignment
+
+def flatten_png(name):
+    im = Image.open(name)
+    if im.mode != 'RGB':
+        bg = Image.new('RGB', im.size, 'white'); bg.paste(im, mask=im.split()[-1]); bg.save(name)
+
 warnings.filterwarnings('ignore')
 SURF='#fcfcfb'; INK='#0b0b0b'; INK2='#52514e'; GRID='#e6e5e1'
 plt.rcParams.update({'font.family':'DejaVu Sans','font.size':10,'axes.edgecolor':GRID,'axes.labelcolor':INK2,
@@ -36,12 +43,12 @@ for i,n in enumerate(nodes):
     te_share = pd.Series(held[n]).value_counts(normalize=True).reindex(order).fillna(0)
     y=np.arange(len(order)); h=0.38
     ax.barh(y-h/2, tr_share.values, h, color=[COL[s] for s in order], alpha=0.45, label='4 training nodes')
-    ax.barh(y+h/2, te_share.values, h, color=[COL[s] for s in order], label=f'{n} (never seen)')
+    ax.barh(y+h/2, te_share.values, h, color=[COL[s] for s in order], label=f"{n.replace('-', ' ')} (never seen)")
     for yy,(a,b) in enumerate(zip(tr_share.values, te_share.values)):
         ax.text(max(a,b)+0.01, yy, f'{a:.0%} → {b:.0%}', va='center', fontsize=8, color=INK2)
     ax.set_yticks(y); ax.set_yticklabels(order if i==0 else ['']*len(order), fontsize=8.5); ax.invert_yaxis()
     ax.set_xlim(0,0.78); ax.set_xticks([0,.2,.4,.6]); ax.set_xticklabels(['0','20%','40%','60%'], fontsize=8)
-    ax.set_title(f'Held out: {n}', loc='left', fontsize=10.5)
+    ax.set_title(f"Held out: {n.replace('-', ' ')}", loc='left', fontsize=10.5)
     ax.grid(axis='y', visible=False)
 fig.text(0.10,0.925,'How the states transfer to a sensor the model never saw   (light bar: share on the 4 training nodes; solid bar: share on the held out node)', fontsize=11, color=INK)
 
@@ -57,9 +64,9 @@ for j,n in enumerate(['Node-01','Node-03']):
     ax.set_yticks([0,6,12,18,23]); ax.set_yticklabels(['00:00','06:00','12:00','18:00','23:00'], fontsize=8.5)
     days = pd.date_range(sub.ts.dt.normalize().min(), periods=sub.day.max()+1)
     tk = list(range(0, len(days), 4)); ax.set_xticks(tk); ax.set_xticklabels([days[t].strftime('%b %d') for t in tk], fontsize=8.5)
-    ax.grid(False); ax.set_title(f'{n}: each hour of the month, labelled by a model that never saw it', loc='left', fontsize=10)
+    ax.grid(False); ax.set_title(f"{n.replace('-', ' ')}: each hour of the month, labelled by a model that never saw it", loc='left', fontsize=10)
     ax.axhspan(6.5, 10.5, color='none', ec=INK, lw=1, ls='--', alpha=0.6)
-    ax.text(0.3, 6.2, '07:00 to 10:00', fontsize=8, color=INK, va='bottom')
+    ax.text(0.3, 6.2, '07:00 to 11:00', fontsize=8, color=INK, va='bottom')
 fig.legend(handles=[Patch(color=COL[s], label=s) for s in order], loc='lower center', ncol=len(order), frameon=False, fontsize=9, bbox_to_anchor=(0.5,0.0))
-fig.text(0.10,0.47,'Where each state occurs in the day  (white: missing hour; dashed box: 07:00 to 10:00)', fontsize=11, color=INK)
-fig.savefig('fig3_leave_one_node_out.png', dpi=160); print('saved')
+fig.text(0.10,0.47,'Where each state occurs in the day  (white: missing hour; dashed box: 07:00 to 11:00)', fontsize=11, color=INK)
+fig.savefig('fig3_leave_one_node_out.png', dpi=160); print('saved'); flatten_png('fig3_leave_one_node_out.png')

@@ -1,11 +1,17 @@
 import pandas as pd, numpy as np, warnings
 import matplotlib; matplotlib.use('Agg')
 import matplotlib.pyplot as plt
+from PIL import Image
 from sklearn.preprocessing import StandardScaler
 from sklearn.decomposition import PCA
 from sklearn.cluster import KMeans
 from sklearn.metrics import silhouette_score
 warnings.filterwarnings('ignore')
+
+def flatten_png(name):
+    im = Image.open(name)
+    if im.mode != 'RGB':
+        bg = Image.new('RGB', im.size, 'white'); bg.paste(im, mask=im.split()[-1]); bg.save(name)
 
 SURF='#fcfcfb'; INK='#0b0b0b'; INK2='#52514e'; GRID='#e6e5e1'
 NODE_COL = {'Node-01':'#2a78d6','Node-02':'#e34948','Node-03':'#1baf7a','Node-04':'#4a3aa7','Node-05':'#eda100'}
@@ -60,7 +66,7 @@ ax[2].set_xlabel('number of clusters (k)'); ax[2].set_ylabel('silhouette score (
 ax[2].set_title('Cluster quality vs k', loc='left', fontsize=11); ax[2].set_ylim(0,0.7)
 ax[2].legend(frameon=False, fontsize=8.5, labelcolor=INK2, loc='lower left')
 fig.suptitle(f'Do the clusters reflect soil states, or just which sensor the row came from?  ({len(d):,} hourly rows, 5 nodes, 13 October to 13 November 2025)', x=0.05, ha='left', fontsize=12, color=INK)
-fig.savefig('fig1_clusters_vs_nodes.png', dpi=160)
+fig.savefig('fig1_clusters_vs_nodes.png', dpi=160); flatten_png('fig1_clusters_vs_nodes.png')
 
 dd = d.set_index('ts').groupby('node')[F].resample('D').mean().reset_index()
 fig, ax = plt.subplots(2,2, figsize=(14,7), sharex=True)
@@ -83,7 +89,8 @@ for name, x, y in ends:
                      xycoords='data').set_position((x + pd.Timedelta(hours=10), yy))
 ax[0,0].legend(frameon=False, fontsize=8.5, labelcolor=INK2, ncol=5, loc='upper left', bbox_to_anchor=(0,1.0))
 import matplotlib.dates as mdates
+
 for a in ax[1]: a.xaxis.set_major_formatter(mdates.DateFormatter('%b %d'))
 fig.suptitle('Daily averages per node: moisture and pH move over the month, while N and K barely move except on one node', x=0.06, ha='left', fontsize=12, color=INK)
-fig.savefig('fig2_what_changes_over_time.png', dpi=160)
+fig.savefig('fig2_what_changes_over_time.png', dpi=160); flatten_png('fig2_what_changes_over_time.png')
 print('saved')

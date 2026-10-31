@@ -1,0 +1,10 @@
+/*.csv
+/*.png
+/*.pkl
+/*.json
+/pipeline_run_log.txt
+__pycache__/
+.venv/
+/*.npy
+/table_npk_ec.tex
+/results_and_discussion.tex

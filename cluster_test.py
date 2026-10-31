@@ -12,7 +12,7 @@ print(f'rows used after removing {bad.sum()} implausible readings: {len(dfc)}')
 def run(X, labels_true, title, ks=range(2,9), seed=0):
     print(f'\n=== {title} ===')
     print(' k   silhouette   DB-index   ARI(node)  NMI(node)   purity(node)')
-    out={}
+    out={}; scan=[]
     for k in ks:
         km = KMeans(n_clusters=k, n_init=20, random_state=seed).fit(X)
         lab = km.labels_
@@ -24,23 +24,26 @@ def run(X, labels_true, title, ks=range(2,9), seed=0):
         purity = ct.max(axis=1).sum()/len(lab)
         print(f'{k:2d}   {sil:9.3f}   {db:8.3f}   {ari:8.3f}   {nmi:8.3f}   {purity:8.3f}')
         out[k]=lab
-    return out
+        scan.append(dict(k=k, silhouette=round(sil,3), davies_bouldin=round(db,3),
+                         ari_node=round(ari,3), nmi_node=round(nmi,3), purity_node=round(purity,3)))
+    return out, pd.DataFrame(scan)
 
 X_all = StandardScaler().fit_transform(dfc[F])
-res_all = run(X_all, dfc.node, 'A) All 8 features, standardized (the naive plan)')
+res_all, scan_all = run(X_all, dfc.node, 'A) All 8 features, standardized (the naive plan)')
+scan_all.to_csv('raw_cluster_scan.csv', index=False)
 for k in (2,5):
     print(f'\nContingency k={k} (rows=cluster, cols=node):')
     print(pd.crosstab(res_all[k], dfc.node))
 
 Fv=['temp','moisture','ph']
 X_v = StandardScaler().fit_transform(dfc[Fv])
-res_v = run(X_v, dfc.node, 'B) Only time-varying features (temp, moisture, pH)')
+res_v, _ = run(X_v, dfc.node, 'B) Only time-varying features (temp, moisture, pH)')
 print('\nContingency k=3:'); print(pd.crosstab(res_v[3], dfc.node))
 
 Xc = dfc[F].copy()
 for f in F: Xc[f] = dfc.groupby('node')[f].transform(lambda s: s - s.mean())
 X_c = StandardScaler().fit_transform(Xc)
-res_c = run(X_c, dfc.node, 'C) Within-node centered (location removed), all 8 features')
+res_c, _ = run(X_c, dfc.node, 'C) Within-node centered (location removed), all 8 features')
 print('\nContingency k=3:'); print(pd.crosstab(res_c[3], dfc.node))
 
 X_o = StandardScaler().fit_transform(df[F])
