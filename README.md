@@ -11,6 +11,10 @@ them by leaving one node out; trains a Random Forest to assign new readings to a
 state; compares it against standard baselines; and tests whether forecasting can
 beat a "no change" baseline.
 
+## User application
+
+The `monitor` folder holds the Soil Condition Monitor, a minimal application designed for smartphones that shows each node's state, its past week, and the recommendation of the rule base (Appendix B of the thesis). Open `monitor/app/index.html` in any browser; it needs no installation and works offline. See `monitor/README.md`.
+
 ## Requirements
 
 * Python 3.11 or later (results were produced with 3.13.16)

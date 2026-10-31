@@ -1,0 +1,60 @@
+@font-face { font-family: "Inter"; font-weight: 400; font-style: normal; font-display: swap; src: url("fonts/inter-latin-400-normal.woff2") format("woff2"); }
+@font-face { font-family: "Inter"; font-weight: 500; font-style: normal; font-display: swap; src: url("fonts/inter-latin-500-normal.woff2") format("woff2"); }
+@font-face { font-family: "Inter"; font-weight: 600; font-style: normal; font-display: swap; src: url("fonts/inter-latin-600-normal.woff2") format("woff2"); }
+@font-face { font-family: "Inter"; font-weight: 700; font-style: normal; font-display: swap; src: url("fonts/inter-latin-700-normal.woff2") format("woff2"); }
+@font-face { font-family: "JetBrains Mono"; font-weight: 400; font-style: normal; font-display: swap; src: url("fonts/jetbrains-mono-latin-400-normal.woff2") format("woff2"); }
+@font-face { font-family: "JetBrains Mono"; font-weight: 500; font-style: normal; font-display: swap; src: url("fonts/jetbrains-mono-latin-500-normal.woff2") format("woff2"); }
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html { -webkit-tap-highlight-color: transparent; }
+}
+
+@layer components {
+  .scrubber {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 100%;
+    height: 6px;
+    border-radius: 9999px;
+    background: linear-gradient(to right, #276B47 0%, #276B47 var(--p, 0%), #DCE2DA var(--p, 0%), #DCE2DA 100%);
+    outline: none;
+    cursor: pointer;
+  }
+  .scrubber::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 22px;
+    height: 22px;
+    border-radius: 9999px;
+    background: #FFFFFF;
+    border: 4px solid #276B47;
+    box-shadow: 0 1px 3px rgba(20, 32, 26, 0.25);
+    transition: transform 150ms ease;
+  }
+  .scrubber::-moz-range-thumb {
+    width: 14px;
+    height: 14px;
+    border-radius: 9999px;
+    background: #FFFFFF;
+    border: 4px solid #276B47;
+  }
+  .scrubber:active::-webkit-slider-thumb { transform: scale(1.12); }
+
+  details.why > summary { list-style: none; }
+  details.why > summary::-webkit-details-marker { display: none; }
+  details.why[open] .why-chev { transform: rotate(180deg); }
+  details.why[open] .why-body { animation: whyIn 220ms ease-out both; }
+
+  #preloader { transition: opacity 420ms ease, visibility 420ms ease; }
+  #preloader.done { opacity: 0; visibility: hidden; }
+}
+
+@keyframes whyIn { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: translateY(0); } }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: 1ms !important; animation-iteration-count: 1 !important; transition-duration: 1ms !important; }
+}

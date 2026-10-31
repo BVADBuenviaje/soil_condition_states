@@ -8,3 +8,4 @@ __pycache__/
 /*.npy
 /table_npk_ec.tex
 /results_and_discussion.tex
+node_modules/
